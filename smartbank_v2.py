@@ -9,9 +9,7 @@ class SmartBank:
     def __init__(self, username: str):
         self.username = username
 
-        # ==========================
-        # FIX: Always create data folder
-        # ==========================
+    
         self.data_dir = Path(__file__).parent / "data"
         self.data_dir.mkdir(exist_ok=True)
 
@@ -25,9 +23,6 @@ class SmartBank:
 
         self._load_data()
 
-    # ==========================
-    # LOAD DATA SAFELY
-    # ==========================
     def _load_data(self):
         # ---- Balance ----
         if self.balance_file.exists():
@@ -45,10 +40,7 @@ class SmartBank:
             self.pin = data if data else "1234"
         else:
             self.save_pin()
-
-    # ==========================
-    # SAVE FUNCTIONS
-    # ==========================
+            
     def save_balance(self):
         self.balance_file.write_text(str(self.balance))
 
@@ -60,58 +52,53 @@ class SmartBank:
         with open(self.history_file, "a", encoding="utf-8") as f:
             f.write(f"[{time}] {entry}\n")
 
-    # ==========================
-    # AUTH SYSTEM
-    # ==========================
     def verify_pin(self):
         for i in range(3):
             pin = input("Enter PIN: ").strip()
             if pin == self.pin:
                 return True
-            print(f"❌ Wrong PIN ({i+1}/3)")
+            print(f"Wrong PIN ({i+1}/3)")
         return False
 
-    # ==========================
     # INPUT HANDLER
-    # ==========================
     def get_amount(self):
         while True:
             try:
                 amt = float(input("Enter amount: ").strip())
                 if amt <= 0:
-                    print("❌ Amount must be greater than 0")
+                    print("Amount must be greater than 0")
                     continue
                 return amt
             except ValueError:
-                print("❌ Invalid input! Enter a number (e.g. 500)")
+                print("Invalid input! Enter a number (e.g. 500)")
 
     # ==========================
     # BANK FEATURES
     # ==========================
     def check_balance(self):
-        print(f"\n💰 Balance: ₹{self.balance:.2f}\n")
+        print(f"\n Balance: ₹{self.balance:.2f}\n")
 
     def deposit(self):
         amt = self.get_amount()
         self.balance += amt
         self.save_balance()
         self.add_history(f"Deposited + ₹{amt:.2f}")
-        print(f"✅ Deposited! Balance: ₹{self.balance:.2f}")
+        print(f" Deposited! Balance: ₹{self.balance:.2f}")
 
     def withdraw(self):
         amt = self.get_amount()
 
         if amt > self.balance:
-            print("❌ Insufficient balance")
+            print("Insufficient balance")
             return
 
         self.balance -= amt
         self.save_balance()
         self.add_history(f"Withdrawn - ₹{amt:.2f}")
-        print(f"✅ Withdraw successful! Balance: ₹{self.balance:.2f}")
+        print(f"Withdraw successful! Balance: ₹{self.balance:.2f}")
 
     def show_history(self):
-        print("\n📜 Transaction History\n")
+        print("\nTransaction History\n")
 
         if not self.history_file.exists():
             print("No history found.")
@@ -130,30 +117,30 @@ class SmartBank:
         current = input("Enter current PIN: ").strip()
 
         if current != self.pin:
-            print("❌ Wrong PIN")
+            print("Wrong PIN")
             return
 
         new_pin = input("Enter new PIN: ").strip()
         confirm = input("Confirm PIN: ").strip()
 
         if new_pin != confirm:
-            print("❌ PIN mismatch")
+            print(" PIN mismatch")
             return
 
         if not new_pin.isdigit() or len(new_pin) != 4:
-            print("❌ PIN must be 4 digits")
+            print("PIN must be 4 digits")
             return
 
         self.pin = new_pin
         self.save_pin()
-        print("✅ PIN updated successfully!")
+        print("PIN updated successfully!")
 
     def add_interest(self):
         try:
             rate = float(input("Enter interest rate (%): ").strip())
 
             if rate <= 0:
-                print("❌ Invalid rate")
+                print("Invalid rate")
                 return
 
             interest = self.balance * rate / 100
@@ -162,11 +149,11 @@ class SmartBank:
             self.save_balance()
             self.add_history(f"Interest + ₹{interest:.2f} ({rate}%)")
 
-            print(f"💹 Interest added: ₹{interest:.2f}")
+            print(f"Interest added: ₹{interest:.2f}")
             print(f"New Balance: ₹{self.balance:.2f}")
 
         except ValueError:
-            print("❌ Invalid input")
+            print("Invalid input")
 
 
 # ==========================
@@ -175,7 +162,7 @@ class SmartBank:
 def main():
     users = ["user1", "user2", "user3"]
 
-    print("\n🏦 SMARTBANK SYSTEM")
+    print("\n SMARTBANK SYSTEM")
     print("====================")
 
     print("\nAvailable Users:")
@@ -185,17 +172,17 @@ def main():
     username = input("\nEnter username: ").strip()
 
     if username not in users:
-        print("❌ User not found")
+        print("User not found")
         return
 
     bank = SmartBank(username)
 
-    print("\n🔐 Login Required")
+    print("\n Login Required")
     if not bank.verify_pin():
-        print("🚫 Too many attempts")
+        print("Too many attempts")
         return
 
-    print(f"\n✅ Welcome {username}!")
+    print(f"\n Welcome {username}!")
 
     while True:
         print("\n====================")
@@ -223,10 +210,10 @@ def main():
         elif choice == "6":
             bank.add_interest()
         elif choice == "7":
-            print("👋 Thanks for using SmartBank!")
+            print(" Thanks for using SmartBank!")
             break
         else:
-            print("❌ Invalid choice")
+            print("Invalid choice")
 
 
 if __name__ == "__main__":
